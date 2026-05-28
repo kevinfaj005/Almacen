@@ -1,0 +1,137 @@
+<div class="inventario-container">
+    <div class="inventario-card">
+        <div class="inventario-header">
+            <h2>Inventario - Entrada de productos</h2>
+            <button *ngIf="isAdmin()" class="btn-primary" (click)="openAddModal()">
+                <span class="material-icons">add</span>
+                Nuevo Producto
+            </button>
+        </div>
+
+        <div *ngIf="isLoading()" class="loading-message">
+            Cargando productos...
+        </div>
+
+        <div *ngIf="errorMessage()" class="error-message">
+            {{ errorMessage() }}
+        </div>
+
+        <div *ngIf="!isLoading() && !errorMessage() && productos().length === 0" class="empty-state">
+            No hay productos registrados.
+        </div>
+
+        <div *ngIf="!isLoading() && !errorMessage() && productos().length > 0" class="table-wrapper">
+            <table class="inventario-table">
+                <thead>
+                    <tr>
+                        <th *ngIf="isAdmin()" class="tituloTabla">Acciones</th>
+                        <th class="tituloTabla">Nombre</th>
+                        <th class="tituloTabla">Descripción</th>
+                        <th class="tituloTabla align-right">Precio</th>
+                        <th class="tituloTabla align-center">Cantidad</th>
+                        <th class="tituloTabla">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of productos()" class="fila-producto">
+                        <td *ngIf="isAdmin()" class="acciones">
+                            <button class="btn-action edit" title="Editar" (click)="openEditModal(product)">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="btn-action text-amber-500 hover:bg-amber-50" title="Entrada de Inventario"
+                                (click)="openStockModal(product)">
+                                <span class="material-icons">inventory</span>
+                            </button>
+                            <button class="btn-action"
+                                [ngClass]="product.estatus ? 'delete' : 'text-green-500 hover:bg-green-100'"
+                                [title]="product.estatus ? 'Dar de baja' : 'Activar'" (click)="toggleStatus(product)">
+                                <span class="material-icons">{{ product.estatus ? 'visibility_off' : 'visibility'
+                                    }}</span>
+                            </button>
+                        </td>
+                        <td class="tablaCuerpo name-cell">{{ product.nombre }}</td>
+                        <td class="tablaCuerpo">{{ product.descripcion }}</td>
+                        <td class="tablaCuerpo cell-price">{{ product.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+                        <td class="tablaCuerpo cell-quantity">{{ product.cantidad }}</td>
+                        <td class="tablaCuerpo">
+                            <span class="status-badge" [ngClass]="product.estatus ? 'active' : 'inactive'">
+                                {{ product.estatus ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="showModal()"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200 border border-slate-200">
+            <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <h3 class="text-xl font-bold text-slate-900">
+                    {{ modalMode() === 'add' ? 'Nuevo Producto' : (modalMode() === 'edit' ? 'Editar Detalles' : 'Entrada
+                    de Inventario') }}
+                </h3>
+                <button class="p-2 hover:bg-slate-200 rounded-lg text-slate-400 transition-all" (click)="closeModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <form (ngSubmit)="guardarProducto()" #productForm="ngForm" class="m-0">
+                <div class="p-8 grid grid-cols-2 gap-4">
+                    <div *ngIf="modalErrorMessage()"
+                        class="col-span-2 bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md text-xs font-medium mb-2">
+                        {{ modalErrorMessage() }}
+                    </div>
+
+                    <!-- Campos de Datos: Solo visibles en Agregar o Editar Detalles -->
+                    <ng-container *ngIf="modalMode() !== 'stock'">
+                        <div class="col-span-2">
+                            <label
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nombre</label>
+                            <input type="text" name="nombre" [(ngModel)]="productoSeleccionado().nombre" required
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                        <div class="col-span-2">
+                            <label
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Precio</label>
+                            <input type="number" name="precio" [(ngModel)]="productoSeleccionado().precio" required
+                                min="0"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                        <div class="col-span-2">
+                            <label
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Descripción</label>
+                            <textarea name="descripcion" [(ngModel)]="productoSeleccionado().descripcion" rows="2"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"></textarea>
+                        </div>
+                    </ng-container>
+
+                    <!-- Sección de Inventario: Solo visible en modo Stock -->
+                    <div class="col-span-2" *ngIf="modalMode() === 'stock'">
+                        <p class="mb-4 text-sm text-slate-600">
+                            Producto: <strong>{{ productoSeleccionado().nombre }}</strong><br>
+                            Stock actual: <strong>{{ cantActual }}</strong>
+                        </p>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Cantidad a añadir
+                        </label>
+                        <input type="number" name="amountToAdd" [(ngModel)]="cantAgregar" required min="1"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all">
+                        <p class="mt-2 text-[11px] text-slate-400">Ingrese la cantidad que desea agregar al inventario.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                    <button type="button" (click)="closeModal()"
+                        class="px-6 py-2.5 text-slate-600 font-semibold hover:bg-slate-200 rounded-xl transition-all">Cancelar</button>
+                    <button type="submit" [disabled]="!productForm.form.valid" class="btn-primary">
+                        {{ modalMode() === 'add' ? 'Guardar Producto' : 'Actualizar' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

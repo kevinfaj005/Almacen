@@ -1,0 +1,49 @@
+<div class="history-container">
+    <div class="history-card">
+        <div class="history-header">
+            <h2>Historial de Movimientos</h2>
+            <div class="filter-group">
+                <button (click)="filtro('')" [class.active]="currentFilter() === ''">Todos</button>
+                <button (click)="filtro('ENTRADA')" [class.active]="currentFilter() === 'ENTRADA'">Entradas</button>
+                <button (click)="filtro('SALIDA')" [class.active]="currentFilter() === 'SALIDA'">Salidas</button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th class="text-center">Cantidad</th>
+                        <th>Usuario</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let m of movimientos()" class="fila-historial">
+                        <td class="cell-date">{{ m.fecha | date:'short' }}</td>
+                        <td class="font-semibold">{{ m.nombreProducto || 'N/A' }}</td>
+                        <td>
+                            <span class="type-badge" [ngClass]="m.tipo.toUpperCase() === 'ENTRADA' ? 'entry' : 'exit'">
+                                {{ m.tipo.toUpperCase() }}
+                            </span>
+                        </td>
+                        <td class="text-center font-mono font-bold">{{ m.cantidad }}</td>
+                        <td class="cell-user">
+                            <div class="flex items-center gap-2">
+                                <span class="material-icons text-slate-400">person</span>
+                                {{ m.nombreUsuario || 'Usuario' }}
+                            </div>
+                        </td>
+                        <td class="cell-obs">{{ m.observaciones || '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="movimientos().length === 0 && !isLoading()" class="p-20 text-center text-slate-400 italic">
+                No hay movimientos registrados para este filtro.
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+@import "tailwindcss" reference;
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.inventario-container {
+    @apply min-h-screen flex items-start justify-center bg-slate-50 px-4 py-12;
+}
+
+.inventario-card {
+    @apply max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200;
+}
+
+.inventario-header {
+    @apply px-8 py-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between;
+}
+
+.btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-semibold text-sm shadow-lg shadow-blue-500/20;
+}
+
+.inventario-header h2 {
+    @apply text-2xl font-bold text-white tracking-tight;
+}
+
+.loading-message {
+    @apply text-center text-blue-600 font-semibold py-20 text-lg animate-pulse;
+}
+
+.error-message {
+    @apply m-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-sm font-medium flex items-center gap-2;
+}
+
+.empty-state {
+    @apply text-center text-slate-400 py-20 italic text-lg;
+}
+
+.table-wrapper {
+    @apply overflow-x-auto;
+}
+
+.inventario-table {
+    @apply w-full border-collapse;
+}
+
+.tituloTabla {
+    @apply py-4 px-6 text-left text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-50 border-b border-slate-100;
+}
+
+.tituloTabla.align-right {
+    @apply text-right;
+}
+
+.tituloTabla.align-center {
+    @apply text-center;
+}
+
+.fila-producto {
+    @apply border-b border-slate-50 transition-colors duration-150 hover:bg-blue-50/30;
+}
+
+.tablaCuerpo {
+    @apply py-4 px-6 text-sm text-slate-700 align-middle;
+}
+
+.tablaCuerpo.name-cell {
+    @apply font-medium;
+}
+
+.tablaCuerpo.cell-price {
+    @apply text-right font-mono;
+}
+
+.tablaCuerpo.cell-quantity {
+    @apply text-center;
+}
+
+.acciones {
+    @apply py-4 px-6 flex items-center gap-2 align-middle;
+}
+
+.btn-action {
+    @apply p-2 rounded-lg transition-all duration-200 flex items-center justify-center;
+}
+
+.btn-action.edit {
+    @apply text-blue-500 hover:bg-blue-100 hover:text-blue-700;
+}
+
+.btn-action.delete {
+    @apply text-rose-500 hover:bg-rose-100 hover:text-rose-700;
+}
+
+.material-icons {
+    @apply text-[20px] align-middle;
+}
+
+.status-badge {
+    @apply px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border;
+}
+
+.status-badge.active {
+    @apply bg-emerald-50 text-emerald-700 border-emerald-100;
+}
+
+.status-badge.inactive {
+    @apply bg-slate-100 text-slate-500 border-slate-200;
+}

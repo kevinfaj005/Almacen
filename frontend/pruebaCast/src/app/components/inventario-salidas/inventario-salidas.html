@@ -1,0 +1,59 @@
+<div class="salidas-container">
+    <div class="salidas-card">
+        <div class="salidas-header">
+            <h2>Gestión de Salidas</h2>
+        </div>
+
+        <div class="p-8">
+            <div *ngIf="errorMessage()" class="status-alert error">{{ errorMessage() }}</div>
+            <div *ngIf="successMessage()" class="status-alert success">{{ successMessage() }}</div>
+
+            <form (ngSubmit)="processExit()" #exitForm="ngForm" class="space-y-6">
+                <div class="form-group">
+                    <label class="form-label">Producto</label>
+                    <select class="form-input" name="productId" [(ngModel)]="ProductoId" (change)="onProductChange()"
+                        required>
+                        <option value="">Seleccione un producto...</option>
+                        <option *ngFor="let p of productos()" [value]="p.idProducto">
+                            {{ p.nombre }} - {{ p.cantidad }} Disponibles
+                        </option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6" *ngIf="productoSeleccionado()">
+                    <div class="info-box">
+                        <span class="label">Precio Unitario</span>
+                        <span class="value">{{ productoSeleccionado()?.precio | currency }}</span>
+                    </div>
+                    <div class="info-box">
+                        <span class="label">Stock Actual</span>
+                        <span class="value" [class.text-rose-500]="productoSeleccionado()!.cantidad < 5">
+                            {{ productoSeleccionado()?.cantidad }} unidades
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label class="form-label">Cantidad a Retirar</label>
+                        <input type="number" class="form-input" [(ngModel)]="cantSolicitada" name="qty" required
+                            min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observaciones</label>
+                        <input type="text" class="form-input" [(ngModel)]="observaciones" name="obs"
+                            placeholder="Observaciones">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="btn-submit"
+                        [disabled]="!exitForm.form.valid || !productoSeleccionado()">
+                        <span class="material-icons">remove_circle_outline</span>
+                        Confirmar Salida
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

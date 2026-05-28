@@ -1,0 +1,44 @@
+@import "tailwindcss" reference;
+.login-container {
+    @apply min-h-screen flex items-center justify-center bg-slate-50 px-4;
+}
+
+.login-card {
+    @apply max-w-md w-full bg-white rounded-2xl shadow-xl p-10 border border-slate-100;
+}
+
+.login-header {
+    @apply text-center mb-10;
+}
+
+.login-header h2 {
+    @apply text-4xl font-extrabold text-blue-900 tracking-tight;
+}
+
+.login-header p {
+    @apply text-slate-500 mt-3 text-lg;
+}
+
+.login-form {
+    @apply space-y-6;
+}
+
+.form-group {
+    @apply flex flex-col space-y-1.5;
+}
+
+.form-group label {
+    @apply text-sm font-semibold text-slate-700 ml-1;
+}
+
+.form-group input {
+    @apply w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all duration-200 text-slate-800;
+}
+
+.error-message {
+    @apply bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md text-sm font-medium animate-pulse;
+}
+
+.btn-submit {
+    @apply w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all duration-300 transform active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
+}
