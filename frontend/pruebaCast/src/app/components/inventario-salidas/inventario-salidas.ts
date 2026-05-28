@@ -56,12 +56,17 @@ export class InventarioSalidas implements OnInit {
     
     if (!product || this.cantSolicitada <= 0) return;
 
+    const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+    if (session.nombreRol !== 'Almacenista') {
+      alert('Tu usuario no tiene los permisos correspondientes para realizar esta acción.');
+      return;
+    }
+
     if (this.cantSolicitada > product.cantidad) {
       this.errorMessage.set(`Error: Stock insuficiente. Disponible: ${product.cantidad}`);
       return;
     }
 
-    const session = JSON.parse(localStorage.getItem('user_session') || '{}');
     const userId = session.idUsuario;
 
     const movement: MovimientoInterface = {

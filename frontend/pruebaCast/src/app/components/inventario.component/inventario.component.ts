@@ -93,6 +93,12 @@ export class InventarioComponent implements OnInit {
   guardarProducto(): void {
     const session = JSON.parse(localStorage.getItem('user_session') || '{}');
     const userId = session.idUsuario;
+
+    if (!this.isAdmin()) {
+      alert('Tu usuario no tiene los permisos correspondientes para realizar esta acción.');
+      return;
+    }
+
     this.modalErrorMessage.set('');
     const product = { ...this.productoSeleccionado() };
     if (this.modalMode() === 'stock') {
@@ -123,6 +129,11 @@ export class InventarioComponent implements OnInit {
   toggleStatus(product: InventarioInterface): void {
     const session = JSON.parse(localStorage.getItem('user_session') || '{}');
     const userId = session.idUsuario;
+
+    if (!this.isAdmin()) {
+      alert('Tu usuario no tiene los permisos correspondientes para realizar esta acción.');
+      return;
+    }
 
     const updatedProduct = { ...product, estatus: !product.estatus };
     const action = updatedProduct.estatus ? 'activar' : 'dar de baja';
